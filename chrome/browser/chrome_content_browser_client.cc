@@ -435,7 +435,7 @@ breakpad::CrashHandlerHostLinux* CreateCrashHandlerHost(
   PathService::Get(chrome::DIR_CRASH_DUMPS, &dumps_path);
   {
     ANNOTATE_SCOPED_MEMORY_LEAK;
-    bool upload = (getenv(env_vars::kHeadless) == NULL);
+    bool upload = false;
     breakpad::CrashHandlerHostLinux* crash_handler =
         new breakpad::CrashHandlerHostLinux(process_type, dumps_path, upload);
     crash_handler->StartUploaderThread();
@@ -1204,6 +1204,8 @@ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
 #endif
 
   if (process_type == switches::kRendererProcess) {
+    command_line->AppendSwitch(switches::kNWJS);
+
     content::RenderProcessHost* process =
         content::RenderProcessHost::FromID(child_process_id);
     Profile* profile =
@@ -1710,12 +1712,8 @@ void ChromeContentBrowserClient::AllowCertificateError(
   if (expired_previous_decision)
     options_mask |= SSLBlockingPage::EXPIRED_BUT_PREVIOUSLY_ALLOWED;
 
-  SafeBrowsingService* safe_browsing_service =
-      g_browser_process->safe_browsing_service();
   SSLErrorHandler::HandleSSLError(
-      tab, cert_error, ssl_info, request_url, options_mask,
-      safe_browsing_service ? safe_browsing_service->ui_manager().get()
-                            : nullptr,
+      tab, cert_error, ssl_info, request_url, options_mask, nullptr,
       callback);
 }
 

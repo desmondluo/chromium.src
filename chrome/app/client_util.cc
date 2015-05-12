@@ -146,14 +146,14 @@ HMODULE MainDllLoader::Load(base::string16* version, base::FilePath* module) {
   if (!dll) {
     base::string16 version_string(GetCurrentModuleVersion());
     if (version_string.empty()) {
-      LOG(ERROR) << "No valid Chrome version found";
+      LOG(ERROR) << "No valid NW.js version found";
       return nullptr;
     }
     *version = version_string;
     *module = module_dir.Append(version_string).Append(dll_name);
     dll = LoadModuleWithDirectory(*module, pre_read);
     if (!dll) {
-      PLOG(ERROR) << "Failed to load Chrome DLL from " << module->value();
+      PLOG(ERROR) << "Failed to load NW.js DLL from " << module->value();
       return nullptr;
     }
   }

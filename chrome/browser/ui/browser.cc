@@ -2080,11 +2080,13 @@ void Browser::OnExtensionUnloaded(
 
 void Browser::OnIsPageTranslatedChanged(content::WebContents* source) {
   DCHECK(source);
+#if 0
   if (tab_strip_model_->GetActiveWebContents() == source) {
     window_->SetTranslateIconToggled(
         ChromeTranslateClient::FromWebContents(
             source)->GetLanguageState().IsPageTranslated());
   }
+#endif
 }
 
 void Browser::OnTranslateEnabledChanged(content::WebContents* source) {
@@ -2351,15 +2353,15 @@ void Browser::SetAsDelegate(WebContents* web_contents, bool set_delegate) {
   CoreTabHelper::FromWebContents(web_contents)->set_delegate(delegate);
   SearchEngineTabHelper::FromWebContents(web_contents)->set_delegate(delegate);
   SearchTabHelper::FromWebContents(web_contents)->set_delegate(delegate);
-  translate::ContentTranslateDriver& content_translate_driver =
-      ChromeTranslateClient::FromWebContents(web_contents)->translate_driver();
+  // translate::ContentTranslateDriver& content_translate_driver =
+  //     ChromeTranslateClient::FromWebContents(web_contents)->translate_driver();
   if (delegate) {
     ui_zoom::ZoomController::FromWebContents(web_contents)->AddObserver(this);
-    content_translate_driver.AddObserver(this);
+    //content_translate_driver.AddObserver(this);
   } else {
     ui_zoom::ZoomController::FromWebContents(web_contents)->RemoveObserver(
         this);
-    content_translate_driver.RemoveObserver(this);
+    //content_translate_driver.RemoveObserver(this);
   }
 }
 
